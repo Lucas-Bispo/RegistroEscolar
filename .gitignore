@@ -7,12 +7,15 @@ __pycache__/
 .venv/
 venv/
 env/
+.python-version
+.envrc
 
 # Tool caches
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
 .coverage
+.coverage.*
 htmlcov/
 
 # Environment files
@@ -21,6 +24,8 @@ htmlcov/
 # IDEs and editors
 .vscode/
 .idea/
+.obsidian/workspace.json
+.obsidian/cache/
 
 # OS files
 .DS_Store
@@ -34,3 +39,4 @@ dist/
 # Local databases and logs
 *.sqlite3
 *.log
+.runtime/

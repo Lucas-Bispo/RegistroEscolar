@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     port: int = 8000
     reload: bool = True
     log_level: str = "INFO"
+    api_v1_prefix: str = "/api/v1"
+    docs_url: str = "/docs"
+    redoc_url: str = "/redoc"
 
     model_config = SettingsConfigDict(
         env_file=".env",
