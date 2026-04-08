@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Registro Escolar</p>
+          <h1>Plataforma de matricula online em construcao.</h1>
+          <p class="lead">
+            Esta interface inicial mostra como o backend e a camada visual podem
+            evoluir juntos sem misturar regra de negocio com HTML.
+          </p>
+          <div class="hero-links">
+            <a href="/docs">Documentacao da API</a>
+            <a href="/api/v1/schools">JSON de escolas</a>
+            <a href="/api/v1/health">Healthcheck</a>
+          </div>
+        </div>
+        <div class="hero-card">
+          <p class="card-label">Estado atual</p>
+          <strong>{{ schools | length }} escolas carregadas</strong>
+          <span>Interface web inicial servida pelo FastAPI</span>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="panel">
+          <div class="panel-head">
+            <p class="eyebrow">Cadastro rapido</p>
+            <h2>Adicionar escola</h2>
+          </div>
+
+          {% if error %}
+          <div class="alert">{{ error }}</div>
+          {% endif %}
+
+          <form class="form" method="post" action="/schools">
+            <label>
+              <span>Nome da escola</span>
+              <input
+                type="text"
+                name="name"
+                placeholder="Ex.: Colegio Horizonte"
+                required
+              />
+            </label>
+
+            <label>
+              <span>Cidade</span>
+              <input
+                type="text"
+                name="city"
+                placeholder="Ex.: Sao Paulo"
+                required
+              />
+            </label>
+
+            <label>
+              <span>UF</span>
+              <input
+                type="text"
+                name="state"
+                placeholder="SP"
+                maxlength="2"
+                required
+              />
+            </label>
+
+            <button type="submit">Cadastrar escola</button>
+          </form>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <p class="eyebrow">Visao geral</p>
+            <h2>Escolas cadastradas</h2>
+          </div>
+
+          <div class="school-list">
+            {% for school in schools %}
+            <div class="school-card">
+              <div>
+                <h3>{{ school.name }}</h3>
+                <p>{{ school.city }} - {{ school.state }}</p>
+              </div>
+              <span class="badge">
+                {% if school.is_active %}Ativa{% else %}Inativa{% endif %}
+              </span>
+            </div>
+            {% else %}
+            <p>Nenhuma escola cadastrada no momento.</p>
+            {% endfor %}
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

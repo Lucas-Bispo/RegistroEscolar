@@ -4,10 +4,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from registro_escolar.domain.schools.repositories import SchoolRepository
-from registro_escolar.infrastructure.repositories.in_memory_school_repository import (
-    InMemorySchoolRepository,
-)
+from registro_escolar.dependencies import get_school_service
 from registro_escolar.schemas.schools import SchoolCreate, SchoolResponse
 from registro_escolar.services.schools import (
     SchoolAlreadyExistsError,
@@ -16,26 +13,6 @@ from registro_escolar.services.schools import (
 )
 
 router = APIRouter(prefix="/schools", tags=["schools"])
-
-_school_repository = InMemorySchoolRepository()
-
-
-def get_school_repository() -> SchoolRepository:
-    """Fornece a implementacao concreta do repositorio.
-
-    Mantemos esta funcao separada para facilitar a futura troca por
-    um repositorio com banco de dados e tambem para simplificar testes.
-    """
-
-    return _school_repository
-
-
-def get_school_service(
-    repository: Annotated[SchoolRepository, Depends(get_school_repository)],
-) -> SchoolService:
-    """Constroi o servico de escolas a partir do repositorio."""
-
-    return SchoolService(repository=repository)
 
 
 @router.get("", response_model=list[SchoolResponse], summary="Lista escolas")

@@ -1,11 +1,17 @@
 """Bootstrap da aplicacao FastAPI."""
 
+from pathlib import Path
+
 import uvicorn
-from fastapi import APIRouter, FastAPI
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from registro_escolar.api.router import api_router
 from registro_escolar.core.config import get_settings
 from registro_escolar.core.logging import configure_logging
+from registro_escolar.web.router import router as web_router
+
+BASE_DIR = Path(__file__).resolve().parent
 
 
 def create_app() -> FastAPI:
@@ -25,31 +31,16 @@ def create_app() -> FastAPI:
         docs_url=settings.docs_url,
         redoc_url=settings.redoc_url,
     )
-    app.include_router(build_root_router())
+    app.mount("/static", build_static_app(), name="static")
+    app.include_router(web_router)
     app.include_router(api_router)
     return app
 
 
-def build_root_router() -> APIRouter:
-    """Cria uma rota raiz com links de navegacao rapida.
+def build_static_app() -> StaticFiles:
+    """Monta o diretorio de arquivos estaticos da interface web."""
 
-    Embora simples, esta rota melhora a experiencia de quem esta
-    acompanhando o projeto em localhost, porque aponta para healthcheck
-    e documentacao sem exigir conhecimento previo da estrutura da API.
-    """
-
-    root_router = APIRouter()
-
-    @root_router.get("/", tags=["meta"], summary="Apresenta links uteis da aplicacao")
-    def root() -> dict[str, str]:
-        return {
-            "name": "RegistroEscolar",
-            "docs": "/docs",
-            "health": "/api/v1/health",
-            "schools": "/api/v1/schools",
-        }
-
-    return root_router
+    return StaticFiles(directory=str(BASE_DIR / "web" / "static"))
 
 
 def run() -> None:

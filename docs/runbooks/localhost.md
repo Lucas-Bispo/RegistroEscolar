@@ -8,10 +8,11 @@ Este runbook explica como executar, validar e parar a aplicacao localmente no WS
 - [Central de documentacao](../README.md)
 - [[fase-03-setup-ambiente]]
 - [[fase-04-implementacao-inicial]]
+- [[fase-04-interface-web]]
 
 ## Enderecos atuais
 
-- Aplicacao raiz: `http://localhost:8000/`
+- Aplicacao raiz: `http://localhost:8000/` interface web HTML
 - Swagger UI: `http://localhost:8000/docs`
 - Healthcheck: `http://localhost:8000/api/v1/health`
 - Escolas: `http://localhost:8000/api/v1/schools`

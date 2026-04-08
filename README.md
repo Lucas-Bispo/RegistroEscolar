@@ -21,6 +21,7 @@ O projeto esta em construcao incremental seguindo fases classicas de engenharia 
 - [Fase 2 - Arquitetura](docs/fase-02-arquitetura.md)
 - [Fase 3 - Setup do ambiente](docs/fase-03-setup-ambiente.md)
 - [Fase 4 - Implementacao inicial](docs/fase-04-implementacao-inicial.md)
+- [Fase 4 - Interface web](docs/fase-04-interface-web.md)
 - [Guia local de execucao](docs/runbooks/localhost.md)
 - [ADR 0001 - Monolito modular](docs/adr/0001-monolito-modular.md)
 
@@ -55,9 +56,9 @@ pip install -e .[dev]
 python -m registro_escolar
 ```
 
-Depois disso, a API deve ficar disponivel em:
+Depois disso, a aplicacao deve ficar disponivel em:
 
-- `http://localhost:8000/`
+- `http://localhost:8000/` interface web
 - `http://localhost:8000/docs`
 - `http://localhost:8000/api/v1/health`
 - `http://localhost:8000/api/v1/schools`
@@ -66,6 +67,14 @@ Para um passo a passo mais completo, consulte:
 
 - [Guia local de execucao](docs/runbooks/localhost.md)
 
+## Interface atual
+
+Agora o projeto possui:
+
+- interface web inicial em `http://localhost:8000/`
+- API backend em `http://localhost:8000/api/v1/...`
+- documentacao interativa em `http://localhost:8000/docs`
+
 ## Observacao
 
-A implementacao foi iniciada com um primeiro recorte vertical simples do dominio de escolas, usando armazenamento em memoria para validar a arquitetura antes da integracao com banco de dados.
+A implementacao foi iniciada com um primeiro recorte vertical simples do dominio de escolas, usando armazenamento em memoria para validar a arquitetura antes da integracao com banco de dados. A interface web atual ainda e inicial, mas ja permite acompanhar visualmente a evolucao do software.
