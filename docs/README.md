@@ -10,6 +10,7 @@ Este arquivo funciona como indice da documentacao do projeto e foi organizado pa
 - [Fase 3 - Setup do ambiente](fase-03-setup-ambiente.md)
 - [Fase 4 - Implementacao inicial](fase-04-implementacao-inicial.md)
 - [Fase 4 - Interface web](fase-04-interface-web.md)
+- [Fase 4 - Painel admin e login](fase-04-painel-admin-login.md)
 - [Guia local de execucao](runbooks/localhost.md)
 - [ADR 0001 - Monolito modular](adr/0001-monolito-modular.md)
 
@@ -20,6 +21,7 @@ Este arquivo funciona como indice da documentacao do projeto e foi organizado pa
 - [[fase-03-setup-ambiente]]
 - [[fase-04-implementacao-inicial]]
 - [[fase-04-interface-web]]
+- [[fase-04-painel-admin-login]]
 - [[runbooks/localhost]]
 - [[adr/0001-monolito-modular]]
 

@@ -22,6 +22,7 @@ O projeto esta em construcao incremental seguindo fases classicas de engenharia 
 - [Fase 3 - Setup do ambiente](docs/fase-03-setup-ambiente.md)
 - [Fase 4 - Implementacao inicial](docs/fase-04-implementacao-inicial.md)
 - [Fase 4 - Interface web](docs/fase-04-interface-web.md)
+- [Fase 4 - Painel admin e login](docs/fase-04-painel-admin-login.md)
 - [Guia local de execucao](docs/runbooks/localhost.md)
 - [ADR 0001 - Monolito modular](docs/adr/0001-monolito-modular.md)
 
@@ -71,7 +72,8 @@ Para um passo a passo mais completo, consulte:
 
 Agora o projeto possui:
 
-- interface web inicial em `http://localhost:8000/`
+- pagina de login em `http://localhost:8000/`
+- painel administrativo inicial em `http://localhost:8000/admin`
 - API backend em `http://localhost:8000/api/v1/...`
 - documentacao interativa em `http://localhost:8000/docs`
 

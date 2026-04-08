@@ -9,13 +9,26 @@ Este runbook explica como executar, validar e parar a aplicacao localmente no WS
 - [[fase-03-setup-ambiente]]
 - [[fase-04-implementacao-inicial]]
 - [[fase-04-interface-web]]
+- [[fase-04-painel-admin-login]]
 
 ## Enderecos atuais
 
-- Aplicacao raiz: `http://localhost:8000/` interface web HTML
+- Aplicacao raiz: `http://localhost:8000/` login administrativo
+- Painel admin: `http://localhost:8000/admin`
 - Swagger UI: `http://localhost:8000/docs`
 - Healthcheck: `http://localhost:8000/api/v1/health`
 - Escolas: `http://localhost:8000/api/v1/schools`
+
+## Credenciais iniciais do admin
+
+Se voce ainda nao alterou o `.env`, a base atual usa:
+
+- email: `admin@registroescolar.local`
+- senha: `admin123`
+
+Recomendacao:
+
+- altere essas credenciais assim que quisermos aproximar mais o ambiente de producao.
 
 ## Subir a aplicacao no WSL
 

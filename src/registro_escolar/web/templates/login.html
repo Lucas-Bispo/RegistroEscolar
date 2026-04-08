@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="shell shell-login">
+      <section class="login-layout">
+        <article class="panel login-panel">
+          <p class="eyebrow">Painel administrativo</p>
+          <h1>Entre para configurar escolas, vagas e formularios.</h1>
+          <p class="lead">
+            Este acesso representa o contexto autenticado do produto. Depois de
+            logar, voce entra no painel que vai evoluir para a montagem do
+            formulario de matricula e publicacao do link da campanha.
+          </p>
+          <div class="hero-links">
+            <a href="/docs">Swagger</a>
+            <a href="/api/v1/health">Healthcheck</a>
+          </div>
+        </article>
+
+        <article class="panel auth-card">
+          <div class="panel-head">
+            <p class="eyebrow">Login</p>
+            <h2>Acesso do administrador</h2>
+          </div>
+
+          {% if error %}
+          <div class="alert">{{ error }}</div>
+          {% endif %}
+
+          <form class="form" method="post" action="/login">
+            <label>
+              <span>Email</span>
+              <input
+                type="email"
+                name="email"
+                placeholder="admin@registroescolar.local"
+                required
+              />
+            </label>
+
+            <label>
+              <span>Senha</span>
+              <input
+                type="password"
+                name="password"
+                placeholder="Sua senha"
+                required
+              />
+            </label>
+
+            <button type="submit">Entrar no painel</button>
+          </form>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

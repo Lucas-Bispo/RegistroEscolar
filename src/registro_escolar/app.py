@@ -5,6 +5,7 @@ from pathlib import Path
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.sessions import SessionMiddleware
 
 from registro_escolar.api.router import api_router
 from registro_escolar.core.config import get_settings
@@ -31,6 +32,7 @@ def create_app() -> FastAPI:
         docs_url=settings.docs_url,
         redoc_url=settings.redoc_url,
     )
+    app.add_middleware(SessionMiddleware, secret_key=settings.secret_key)
     app.mount("/static", build_static_app(), name="static")
     app.include_router(web_router)
     app.include_router(api_router)

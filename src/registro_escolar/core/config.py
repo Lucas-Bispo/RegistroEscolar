@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     api_v1_prefix: str = "/api/v1"
     docs_url: str = "/docs"
     redoc_url: str = "/redoc"
+    secret_key: str = "troque-esta-chave-em-producao"
+    admin_email: str = "admin@registroescolar.local"
+    admin_password: str = "admin123"
 
     model_config = SettingsConfigDict(
         env_file=".env",

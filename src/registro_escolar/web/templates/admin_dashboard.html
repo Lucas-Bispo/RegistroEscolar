@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Painel Admin</p>
+          <h1>Base de configuracao do sistema de matricula.</h1>
+          <p class="lead">
+            Voce esta autenticado como <strong>{{ admin_email }}</strong>. Este
+            painel sera a base para configurar escolas, periodos, turmas, vagas
+            e formularios dinamicos.
+          </p>
+          <div class="hero-links">
+            <a href="/docs">Documentacao da API</a>
+            <a href="/api/v1/schools">JSON de escolas</a>
+            <a href="/api/v1/health">Healthcheck</a>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <p class="card-label">Proximos modulos</p>
+          <strong>Turmas, vagas e formularios</strong>
+          <span>Fluxo administrativo autenticado em construcao incremental</span>
+          <form method="post" action="/logout">
+            <button class="ghost-button" type="submit">Sair</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="panel">
+          <div class="panel-head">
+            <p class="eyebrow">Cadastro rapido</p>
+            <h2>Adicionar escola</h2>
+          </div>
+
+          {% if error %}
+          <div class="alert">{{ error }}</div>
+          {% endif %}
+
+          <form class="form" method="post" action="/admin/schools">
+            <label>
+              <span>Nome da escola</span>
+              <input type="text" name="name" placeholder="Ex.: Colegio Horizonte" required />
+            </label>
+
+            <label>
+              <span>Cidade</span>
+              <input type="text" name="city" placeholder="Ex.: Sao Paulo" required />
+            </label>
+
+            <label>
+              <span>UF</span>
+              <input type="text" name="state" placeholder="SP" maxlength="2" required />
+            </label>
+
+            <button type="submit">Cadastrar escola</button>
+          </form>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <p class="eyebrow">Visao geral</p>
+            <h2>Escolas cadastradas</h2>
+          </div>
+
+          <div class="school-list">
+            {% for school in schools %}
+            <div class="school-card">
+              <div>
+                <h3>{{ school.name }}</h3>
+                <p>{{ school.city }} - {{ school.state }}</p>
+              </div>
+              <span class="badge">
+                {% if school.is_active %}Ativa{% else %}Inativa{% endif %}
+              </span>
+            </div>
+            {% else %}
+            <p>Nenhuma escola cadastrada no momento.</p>
+            {% endfor %}
+          </div>
+        </article>
+      </section>
+
+      <section class="panel roadmap-panel">
+        <div class="panel-head">
+          <p class="eyebrow">Sequencia funcional</p>
+          <h2>O que vamos construir a seguir</h2>
+        </div>
+        <div class="roadmap-grid">
+          <div class="roadmap-card">
+            <strong>1. Periodos letivos</strong>
+            <p>Selecionar campanha e janela de matricula.</p>
+          </div>
+          <div class="roadmap-card">
+            <strong>2. Turmas e vagas</strong>
+            <p>Definir capacidade, turno e regras de ocupacao.</p>
+          </div>
+          <div class="roadmap-card">
+            <strong>3. Formulario dinamico</strong>
+            <p>Montar os campos que o responsavel vai preencher.</p>
+          </div>
+          <div class="roadmap-card">
+            <strong>4. Link publico</strong>
+            <p>Publicar a versao ativa da campanha para matricula.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
