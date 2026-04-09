@@ -1,5 +1,6 @@
 """Rotas HTML do painel administrativo inicial."""
 
+from datetime import date
 from pathlib import Path
 from typing import Annotated
 
@@ -7,7 +8,16 @@ from fastapi import APIRouter, Depends, Form, Request, status
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from registro_escolar.dependencies import get_admin_auth_service, get_school_service
+from registro_escolar.dependencies import (
+    get_academic_term_service,
+    get_admin_auth_service,
+    get_school_service,
+)
+from registro_escolar.services.academic_terms import (
+    AcademicTermAlreadyExistsError,
+    AcademicTermService,
+    InvalidAcademicTermRangeError,
+)
 from registro_escolar.services.auth import AdminAuthService, AuthenticationError
 from registro_escolar.services.schools import SchoolAlreadyExistsError, SchoolService
 
@@ -44,6 +54,7 @@ def login_page(
     }
     return templates.TemplateResponse(request, "login.html", context)
 
+
 @router.post("/login", summary="Autentica o admin do painel")
 def login(
     request: Request,
@@ -68,6 +79,10 @@ def login(
 def admin_dashboard(
     request: Request,
     service: Annotated[SchoolService, Depends(get_school_service)],
+    academic_term_service: Annotated[
+        AcademicTermService,
+        Depends(get_academic_term_service),
+    ],
     error: str | None = None,
 ) -> object:
     """Renderiza o painel administrativo protegido."""
@@ -78,9 +93,11 @@ def admin_dashboard(
         return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
 
     schools = service.list_schools()
+    academic_terms = academic_term_service.list_terms()
     context = {
         "request": request,
         "schools": schools,
+        "academic_terms": academic_terms,
         "error": error,
         "page_title": "Painel Admin | RegistroEscolar",
         "admin_email": admin_email,
@@ -109,6 +126,44 @@ def create_school_from_form(
     except SchoolAlreadyExistsError:
         return RedirectResponse(
             url="/admin?error=Ja+existe+uma+escola+com+esse+nome",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+
+
+@router.post(
+    "/admin/academic-terms",
+    summary="Cria um periodo letivo a partir do painel web",
+)
+def create_academic_term_from_form(
+    request: Request,
+    name: Annotated[str, Form()],
+    start_date: Annotated[str, Form()],
+    end_date: Annotated[str, Form()],
+    service: Annotated[AcademicTermService, Depends(get_academic_term_service)],
+    is_active: Annotated[str | None, Form()] = None,
+) -> RedirectResponse:
+    """Processa o formulario de periodo letivo no painel."""
+
+    try:
+        require_admin_session(request)
+    except PermissionError:
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+
+    try:
+        service.create_term(
+            name=name,
+            start_date=date.fromisoformat(start_date),
+            end_date=date.fromisoformat(end_date),
+            is_active=is_active is not None,
+        )
+        return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+    except (
+        AcademicTermAlreadyExistsError,
+        InvalidAcademicTermRangeError,
+        ValueError,
+    ):
+        return RedirectResponse(
+            url="/admin?error=Falha+ao+criar+o+periodo+letivo",
             status_code=status.HTTP_303_SEE_OTHER,
         )
 

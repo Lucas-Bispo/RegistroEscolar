@@ -23,7 +23,9 @@ O projeto esta em construcao incremental seguindo fases classicas de engenharia 
 - [Fase 4 - Implementacao inicial](docs/fase-04-implementacao-inicial.md)
 - [Fase 4 - Interface web](docs/fase-04-interface-web.md)
 - [Fase 4 - Painel admin e login](docs/fase-04-painel-admin-login.md)
+- [Fase 4 - Periodos letivos](docs/fase-04-periodos-letivos.md)
 - [Guia local de execucao](docs/runbooks/localhost.md)
+- [Guia de deploy em Linux](docs/runbooks/deploy-linux.md)
 - [ADR 0001 - Monolito modular](docs/adr/0001-monolito-modular.md)
 
 ## Roadmap de engenharia

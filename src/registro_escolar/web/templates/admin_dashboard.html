@@ -20,6 +20,7 @@
           <div class="hero-links">
             <a href="/docs">Documentacao da API</a>
             <a href="/api/v1/schools">JSON de escolas</a>
+            <a href="/api/v1/academic-terms">JSON de periodos</a>
             <a href="/api/v1/health">Healthcheck</a>
           </div>
         </div>
@@ -89,6 +90,65 @@
         </article>
       </section>
 
+      <section class="grid grid-secondary">
+        <article class="panel">
+          <div class="panel-head">
+            <p class="eyebrow">Configuracao academica</p>
+            <h2>Adicionar periodo letivo</h2>
+          </div>
+
+          <form class="form" method="post" action="/admin/academic-terms">
+            <label>
+              <span>Nome do periodo</span>
+              <input type="text" name="name" placeholder="Ex.: Matricula 2028" required />
+            </label>
+
+            <label>
+              <span>Data inicial</span>
+              <input type="date" name="start_date" required />
+            </label>
+
+            <label>
+              <span>Data final</span>
+              <input type="date" name="end_date" required />
+            </label>
+
+            <label class="checkbox-field">
+              <input type="checkbox" name="is_active" value="true" />
+              <span>Marcar como periodo ativo</span>
+            </label>
+
+            <button type="submit">Cadastrar periodo</button>
+          </form>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <p class="eyebrow">Campanhas</p>
+            <h2>Periodos letivos cadastrados</h2>
+          </div>
+
+          <div class="school-list">
+            {% for academic_term in academic_terms %}
+            <div class="school-card">
+              <div>
+                <h3>{{ academic_term.name }}</h3>
+                <p>
+                  {{ academic_term.start_date.strftime("%d/%m/%Y") }} ate
+                  {{ academic_term.end_date.strftime("%d/%m/%Y") }}
+                </p>
+              </div>
+              <span class="badge {% if not academic_term.is_active %}badge-muted{% endif %}">
+                {% if academic_term.is_active %}Ativo{% else %}Inativo{% endif %}
+              </span>
+            </div>
+            {% else %}
+            <p>Nenhum periodo letivo cadastrado no momento.</p>
+            {% endfor %}
+          </div>
+        </article>
+      </section>
+
       <section class="panel roadmap-panel">
         <div class="panel-head">
           <p class="eyebrow">Sequencia funcional</p>
@@ -97,7 +157,7 @@
         <div class="roadmap-grid">
           <div class="roadmap-card">
             <strong>1. Periodos letivos</strong>
-            <p>Selecionar campanha e janela de matricula.</p>
+            <p>Selecionar campanha e janela de matricula. Ja iniciado.</p>
           </div>
           <div class="roadmap-card">
             <strong>2. Turmas e vagas</strong>

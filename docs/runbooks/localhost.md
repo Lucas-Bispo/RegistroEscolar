@@ -10,6 +10,7 @@ Este runbook explica como executar, validar e parar a aplicacao localmente no WS
 - [[fase-04-implementacao-inicial]]
 - [[fase-04-interface-web]]
 - [[fase-04-painel-admin-login]]
+- [[fase-04-periodos-letivos]]
 
 ## Enderecos atuais
 

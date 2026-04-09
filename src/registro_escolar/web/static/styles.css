@@ -152,6 +152,10 @@ button:hover {
   gap: 24px;
 }
 
+.grid-secondary {
+  margin-top: 24px;
+}
+
 .panel {
   padding: 28px;
 }
@@ -178,6 +182,18 @@ button:hover {
   display: grid;
   gap: 8px;
   color: var(--muted);
+}
+
+.checkbox-field {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-field input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
 }
 
 .form input {
@@ -243,6 +259,11 @@ button {
   background: rgba(43, 119, 85, 0.12);
   color: #1c6a49;
   font-size: 0.88rem;
+}
+
+.badge-muted {
+  background: rgba(97, 88, 77, 0.12);
+  color: var(--muted);
 }
 
 .roadmap-panel {
