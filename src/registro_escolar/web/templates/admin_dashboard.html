@@ -21,6 +21,7 @@
             <a href="/docs">Documentacao da API</a>
             <a href="/api/v1/schools">JSON de escolas</a>
             <a href="/api/v1/academic-terms">JSON de periodos</a>
+            <a href="/api/v1/classes">JSON de turmas</a>
             <a href="/api/v1/health">Healthcheck</a>
           </div>
         </div>
@@ -150,6 +151,82 @@
       </section>
 
       <section class="panel roadmap-panel">
+        <div class="grid grid-secondary">
+          <article class="panel panel-nested">
+            <div class="panel-head">
+              <p class="eyebrow">Turmas e vagas</p>
+              <h2>Adicionar turma</h2>
+            </div>
+
+            <form class="form" method="post" action="/admin/classes">
+              <label>
+                <span>Escola</span>
+                <select name="school_id" required>
+                  <option value="">Selecione uma escola</option>
+                  {% for school in schools %}
+                  <option value="{{ school.id }}">{{ school.name }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+
+              <label>
+                <span>Periodo letivo</span>
+                <select name="academic_term_id" required>
+                  <option value="">Selecione um periodo</option>
+                  {% for academic_term in academic_terms %}
+                  <option value="{{ academic_term.id }}">{{ academic_term.name }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+
+              <label>
+                <span>Nome da turma</span>
+                <input type="text" name="name" placeholder="Ex.: 1 Ano A" required />
+              </label>
+
+              <label>
+                <span>Turno</span>
+                <input type="text" name="shift" placeholder="Ex.: Manha" required />
+              </label>
+
+              <label>
+                <span>Capacidade maxima</span>
+                <input type="number" name="capacity" min="1" max="500" required />
+              </label>
+
+              <label class="checkbox-field">
+                <input type="checkbox" name="is_active" value="true" checked />
+                <span>Marcar turma como ativa</span>
+              </label>
+
+              <button type="submit">Cadastrar turma</button>
+            </form>
+          </article>
+
+          <article class="panel panel-nested">
+            <div class="panel-head">
+              <p class="eyebrow">Capacidade</p>
+              <h2>Turmas cadastradas</h2>
+            </div>
+
+            <div class="school-list">
+              {% for school_class in classes %}
+              <div class="school-card">
+                <div>
+                  <h3>{{ school_class.name }}</h3>
+                  <p>{{ school_class.shift }} • {{ school_class.capacity }} vagas</p>
+                </div>
+                <span class="badge {% if not school_class.is_active %}badge-muted{% endif %}">
+                  {% if school_class.is_active %}Ativa{% else %}Inativa{% endif %}
+                </span>
+              </div>
+              {% else %}
+              <p>Nenhuma turma cadastrada no momento.</p>
+              {% endfor %}
+            </div>
+          </article>
+        </div>
+
         <div class="panel-head">
           <p class="eyebrow">Sequencia funcional</p>
           <h2>O que vamos construir a seguir</h2>
@@ -161,7 +238,7 @@
           </div>
           <div class="roadmap-card">
             <strong>2. Turmas e vagas</strong>
-            <p>Definir capacidade, turno e regras de ocupacao.</p>
+            <p>Definir capacidade, turno e regras de ocupacao. Ja iniciado.</p>
           </div>
           <div class="roadmap-card">
             <strong>3. Formulario dinamico</strong>

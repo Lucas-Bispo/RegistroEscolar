@@ -11,6 +11,7 @@ Este runbook explica como executar, validar e parar a aplicacao localmente no WS
 - [[fase-04-interface-web]]
 - [[fase-04-painel-admin-login]]
 - [[fase-04-periodos-letivos]]
+- [[fase-04-turmas-vagas]]
 
 ## Enderecos atuais
 
@@ -19,6 +20,8 @@ Este runbook explica como executar, validar e parar a aplicacao localmente no WS
 - Swagger UI: `http://localhost:8000/docs`
 - Healthcheck: `http://localhost:8000/api/v1/health`
 - Escolas: `http://localhost:8000/api/v1/schools`
+- Periodos letivos: `http://localhost:8000/api/v1/academic-terms`
+- Turmas: `http://localhost:8000/api/v1/classes`
 
 ## Credenciais iniciais do admin
 

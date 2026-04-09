@@ -11,6 +11,7 @@ from fastapi.templating import Jinja2Templates
 from registro_escolar.dependencies import (
     get_academic_term_service,
     get_admin_auth_service,
+    get_school_class_service,
     get_school_service,
 )
 from registro_escolar.services.academic_terms import (
@@ -19,6 +20,12 @@ from registro_escolar.services.academic_terms import (
     InvalidAcademicTermRangeError,
 )
 from registro_escolar.services.auth import AdminAuthService, AuthenticationError
+from registro_escolar.services.classes import (
+    InvalidClassCapacityError,
+    InvalidClassRelationError,
+    SchoolClassAlreadyExistsError,
+    SchoolClassService,
+)
 from registro_escolar.services.schools import SchoolAlreadyExistsError, SchoolService
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -83,6 +90,10 @@ def admin_dashboard(
         AcademicTermService,
         Depends(get_academic_term_service),
     ],
+    school_class_service: Annotated[
+        SchoolClassService,
+        Depends(get_school_class_service),
+    ],
     error: str | None = None,
 ) -> object:
     """Renderiza o painel administrativo protegido."""
@@ -94,10 +105,12 @@ def admin_dashboard(
 
     schools = service.list_schools()
     academic_terms = academic_term_service.list_terms()
+    classes = school_class_service.list_classes()
     context = {
         "request": request,
         "schools": schools,
         "academic_terms": academic_terms,
+        "classes": classes,
         "error": error,
         "page_title": "Painel Admin | RegistroEscolar",
         "admin_email": admin_email,
@@ -164,6 +177,46 @@ def create_academic_term_from_form(
     ):
         return RedirectResponse(
             url="/admin?error=Falha+ao+criar+o+periodo+letivo",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+
+
+@router.post("/admin/classes", summary="Cria uma turma a partir do painel web")
+def create_class_from_form(
+    request: Request,
+    school_id: Annotated[str, Form()],
+    academic_term_id: Annotated[str, Form()],
+    name: Annotated[str, Form()],
+    shift: Annotated[str, Form()],
+    capacity: Annotated[int, Form()],
+    service: Annotated[SchoolClassService, Depends(get_school_class_service)],
+    is_active: Annotated[str | None, Form()] = None,
+) -> RedirectResponse:
+    """Processa o formulario de turma e redireciona para o dashboard."""
+
+    try:
+        require_admin_session(request)
+    except PermissionError:
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+
+    try:
+        service.create_class(
+            school_id=school_id,
+            academic_term_id=academic_term_id,
+            name=name,
+            shift=shift,
+            capacity=capacity,
+            is_active=is_active is not None,
+        )
+        return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+    except (
+        SchoolClassAlreadyExistsError,
+        InvalidClassCapacityError,
+        InvalidClassRelationError,
+        ValueError,
+    ):
+        return RedirectResponse(
+            url="/admin?error=Falha+ao+criar+a+turma",
             status_code=status.HTTP_303_SEE_OTHER,
         )
 

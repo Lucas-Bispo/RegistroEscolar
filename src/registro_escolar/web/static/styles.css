@@ -160,6 +160,13 @@ button:hover {
   padding: 28px;
 }
 
+.panel-nested {
+  padding: 0;
+  box-shadow: none;
+  background: transparent;
+  border: none;
+}
+
 .panel-head {
   margin-bottom: 20px;
 }
@@ -197,6 +204,16 @@ button:hover {
 }
 
 .form input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: #fffdfa;
+  color: var(--text);
+  font: inherit;
+}
+
+.form select {
   width: 100%;
   border: 1px solid var(--line);
   border-radius: 16px;
