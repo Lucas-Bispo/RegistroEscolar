@@ -31,6 +31,28 @@ class EnrollmentSubmissionLimitReachedError(ValueError):
     """Erro levantado quando o link atingiu o limite configurado."""
 
 
+class EnrollmentNotFoundError(LookupError):
+    """Erro levantado quando uma inscricao nao e encontrada."""
+
+
+class InvalidEnrollmentStatusTransitionError(ValueError):
+    """Erro levantado quando a transicao de status nao e permitida."""
+
+
+class ClassCapacityExceededError(ValueError):
+    """Erro levantado quando nao ha vagas para confirmar a inscricao."""
+
+
+ALLOWED_STATUS_TRANSITIONS = {
+    "submitted": {"pending_validation", "confirmed", "rejected", "waitlisted"},
+    "pending_validation": {"confirmed", "rejected", "waitlisted"},
+    "waitlisted": {"pending_validation", "confirmed", "rejected"},
+    "rejected": {"pending_validation"},
+    "confirmed": set(),
+    "cancelled": set(),
+}
+
+
 class EnrollmentService:
     """Orquestra os casos de uso do contexto de inscricoes."""
 
@@ -54,6 +76,15 @@ class EnrollmentService:
         """Lista todas as inscricoes registradas."""
 
         return self._enrollment_repository.list_all()
+
+    def get_enrollment(self, enrollment_id: str) -> Enrollment:
+        """Busca uma inscricao pelo identificador."""
+
+        enrollment = self._enrollment_repository.get_by_id(enrollment_id)
+        if enrollment is None:
+            msg = "Inscricao nao encontrada."
+            raise EnrollmentNotFoundError(msg)
+        return enrollment
 
     def create_public_enrollment(
         self,
@@ -114,6 +145,43 @@ class EnrollmentService:
             answers=validated_answers,
         )
         return self._enrollment_repository.add(enrollment)
+
+    def update_status(self, enrollment_id: str, new_status: str) -> Enrollment:
+        """Atualiza o status operacional da inscricao."""
+
+        enrollment = self.get_enrollment(enrollment_id)
+
+        if new_status == enrollment.status:
+            return enrollment
+
+        allowed_transitions = ALLOWED_STATUS_TRANSITIONS.get(enrollment.status, set())
+        if new_status not in allowed_transitions:
+            msg = "A transicao de status solicitada nao e permitida."
+            raise InvalidEnrollmentStatusTransitionError(msg)
+
+        if new_status == "confirmed":
+            school_class = self._class_repository.get_by_id(enrollment.class_id)
+            if school_class is None:
+                msg = "A turma da inscricao nao foi encontrada."
+                raise InvalidEnrollmentSubmissionError(msg)
+            confirmed_count = self._enrollment_repository.count_by_class_id_and_status(
+                class_id=enrollment.class_id,
+                status="confirmed",
+            )
+            if confirmed_count >= school_class.capacity:
+                msg = "Nao ha mais vagas disponiveis para confirmar esta turma."
+                raise ClassCapacityExceededError(msg)
+
+        enrollment.status = new_status
+        return self._enrollment_repository.update(enrollment)
+
+    def count_confirmed_enrollments(self, class_id: str) -> int:
+        """Conta quantas inscricoes confirmadas existem na turma."""
+
+        return self._enrollment_repository.count_by_class_id_and_status(
+            class_id=class_id,
+            status="confirmed",
+        )
 
     def _resolve_active_link(self, token: str) -> PublicEnrollmentLink:
         """Resolve um token publico ja validando disponibilidade do link."""

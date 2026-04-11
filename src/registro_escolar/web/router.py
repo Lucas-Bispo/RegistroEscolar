@@ -33,9 +33,12 @@ from registro_escolar.services.classes import (
     SchoolClassService,
 )
 from registro_escolar.services.enrollments import (
+    ClassCapacityExceededError,
+    EnrollmentNotFoundError,
     EnrollmentService,
     EnrollmentSubmissionLimitReachedError,
     InvalidEnrollmentSubmissionError,
+    InvalidEnrollmentStatusTransitionError,
 )
 from registro_escolar.services.forms import (
     EnrollmentFormAlreadyExistsError,
@@ -173,6 +176,17 @@ def admin_dashboard(
     forms = enrollment_form_service.list_forms()
     public_links = public_link_service.list_links()
     enrollments = enrollment_service.list_enrollments()
+    class_capacity = {
+        school_class.id: {
+            "confirmed": enrollment_service.count_confirmed_enrollments(school_class.id),
+            "remaining": max(
+                school_class.capacity
+                - enrollment_service.count_confirmed_enrollments(school_class.id),
+                0,
+            ),
+        }
+        for school_class in classes
+    }
     context = {
         "request": request,
         "schools": schools,
@@ -181,6 +195,7 @@ def admin_dashboard(
         "forms": forms,
         "public_links": public_links,
         "enrollments": enrollments,
+        "class_capacity": class_capacity,
         "error": error,
         "page_title": "Painel Admin | RegistroEscolar",
         "admin_email": admin_email,
@@ -388,6 +403,45 @@ def create_public_link_from_form(
     ):
         return RedirectResponse(
             url="/admin?error=Falha+ao+criar+o+link+publico",
+            status_code=status.HTTP_303_SEE_OTHER,
+        )
+
+
+@router.post(
+    "/admin/enrollments/{enrollment_id}/status",
+    summary="Atualiza o status operacional de uma inscricao no painel",
+)
+def update_enrollment_status_from_form(
+    enrollment_id: str,
+    request: Request,
+    new_status: Annotated[str, Form()],
+    enrollment_service: Annotated[
+        EnrollmentService,
+        Depends(get_enrollment_service),
+    ],
+) -> RedirectResponse:
+    """Processa a acao operacional do painel sobre uma inscricao."""
+
+    try:
+        require_admin_session(request)
+    except PermissionError:
+        return RedirectResponse(url="/", status_code=status.HTTP_303_SEE_OTHER)
+
+    try:
+        enrollment_service.update_status(
+            enrollment_id=enrollment_id,
+            new_status=new_status,
+        )
+        return RedirectResponse(url="/admin", status_code=status.HTTP_303_SEE_OTHER)
+    except (
+        EnrollmentNotFoundError,
+        InvalidEnrollmentStatusTransitionError,
+        EnrollmentSubmissionLimitReachedError,
+        InvalidEnrollmentSubmissionError,
+        ClassCapacityExceededError,
+    ):
+        return RedirectResponse(
+            url="/admin?error=Falha+ao+atualizar+o+status+da+inscricao",
             status_code=status.HTTP_303_SEE_OTHER,
         )
 

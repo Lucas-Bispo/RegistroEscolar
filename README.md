@@ -28,6 +28,7 @@ O projeto esta em construcao incremental seguindo fases classicas de engenharia 
 - [Fase 4 - Formularios dinamicos](docs/fase-04-formularios-dinamicos.md)
 - [Fase 4 - Links publicos](docs/fase-04-links-publicos.md)
 - [Fase 4 - Inscricoes publicas](docs/fase-04-inscricoes-publicas.md)
+- [Fase 4 - Validacao operacional e vagas](docs/fase-04-validacao-operacional-vagas.md)
 - [Guia local de execucao](docs/runbooks/localhost.md)
 - [Guia de deploy em Linux](docs/runbooks/deploy-linux.md)
 - [ADR 0001 - Monolito modular](docs/adr/0001-monolito-modular.md)
@@ -83,6 +84,7 @@ Agora o projeto possui:
 - construcao inicial de formularios dinamicos no painel admin
 - geracao inicial de links publicos em `http://localhost:8000/matricula/{token}`
 - submissao publica inicial com protocolo em `http://localhost:8000/matricula/{token}`
+- tratamento operacional inicial com confirmacao e fila no painel admin
 - API backend em `http://localhost:8000/api/v1/...`
 - documentacao interativa em `http://localhost:8000/docs`
 

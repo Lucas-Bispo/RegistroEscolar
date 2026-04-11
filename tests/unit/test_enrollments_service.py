@@ -28,7 +28,9 @@ from registro_escolar.infrastructure.repositories.in_memory_school_repository im
     InMemorySchoolRepository,
 )
 from registro_escolar.services.enrollments import (
+    ClassCapacityExceededError,
     EnrollmentService,
+    InvalidEnrollmentStatusTransitionError,
     EnrollmentSubmissionLimitReachedError,
     InvalidEnrollmentSubmissionError,
 )
@@ -190,3 +192,77 @@ def test_create_public_enrollment_respects_submission_limit() -> None:
                 3: "Manha",
             },
         )
+
+
+def test_update_status_confirms_enrollment_with_available_capacity() -> None:
+    """Deve confirmar inscricao quando ainda houver vaga na turma."""
+
+    service, public_link, school_class = build_service()
+    enrollment = service.create_public_enrollment(
+        token=public_link.token,
+        class_id=school_class.id,
+        answers={
+            1: "Ana Souza",
+            2: "ana@example.com",
+            3: "Manha",
+        },
+    )
+
+    updated_enrollment = service.update_status(
+        enrollment_id=enrollment.id,
+        new_status="confirmed",
+    )
+
+    assert updated_enrollment.status == "confirmed"
+    assert service.count_confirmed_enrollments(school_class.id) == 1
+
+
+def test_update_status_rejects_confirmation_when_class_is_full() -> None:
+    """Nao deve confirmar quando a turma ja ocupou toda a capacidade."""
+
+    service, public_link, school_class = build_service()
+    school_class.capacity = 1
+
+    first_enrollment = service.create_public_enrollment(
+        token=public_link.token,
+        class_id=school_class.id,
+        answers={
+            1: "Ana Souza",
+            2: "ana@example.com",
+            3: "Manha",
+        },
+    )
+    second_enrollment = service.create_public_enrollment(
+        token=public_link.token,
+        class_id=school_class.id,
+        answers={
+            1: "Bia Lima",
+            2: "bia@example.com",
+            3: "Manha",
+        },
+    )
+
+    service.update_status(first_enrollment.id, "confirmed")
+
+    with pytest.raises(ClassCapacityExceededError):
+        service.update_status(second_enrollment.id, "confirmed")
+
+
+def test_update_status_rejects_invalid_transition_from_confirmed() -> None:
+    """Nao deve permitir reabrir inscricao ja confirmada neste recorte."""
+
+    service, public_link, school_class = build_service()
+    enrollment = service.create_public_enrollment(
+        token=public_link.token,
+        class_id=school_class.id,
+        answers={
+            1: "Ana Souza",
+            2: "ana@example.com",
+            3: "Manha",
+        },
+    )
+
+    service.update_status(enrollment.id, "confirmed")
+
+    with pytest.raises(InvalidEnrollmentStatusTransitionError):
+        service.update_status(enrollment.id, "rejected")

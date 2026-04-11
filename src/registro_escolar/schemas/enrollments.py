@@ -55,3 +55,11 @@ class EnrollmentResponse(BaseModel):
     status: str
     answers: list[EnrollmentAnswerResponse]
     created_at: datetime
+
+
+class EnrollmentStatusUpdate(BaseModel):
+    """Payload de atualizacao operacional de status."""
+
+    status: str = Field(
+        pattern="^(pending_validation|confirmed|rejected|waitlisted)$"
+    )

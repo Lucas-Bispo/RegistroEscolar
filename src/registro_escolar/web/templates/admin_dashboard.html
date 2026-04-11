@@ -168,6 +168,12 @@
                   <h3>{{ enrollment.protocol }}</h3>
                   <p>Status {{ enrollment.status }} | {{ enrollment.answers|length }} respostas registradas</p>
                 </div>
+                <form class="form-inline" method="post" action="/admin/enrollments/{{ enrollment.id }}/status">
+                  <button type="submit" name="new_status" value="pending_validation">Em analise</button>
+                  <button type="submit" name="new_status" value="confirmed">Confirmar</button>
+                  <button type="submit" name="new_status" value="waitlisted">Fila</button>
+                  <button type="submit" name="new_status" value="rejected">Rejeitar</button>
+                </form>
                 <span class="badge">{{ enrollment.created_at.strftime("%d/%m/%Y %H:%M UTC") }}</span>
               </div>
               {% endfor %}
@@ -271,7 +277,10 @@
               <div class="school-card">
                 <div>
                   <h3>{{ school_class.name }}</h3>
-                  <p>{{ school_class.shift }} • {{ school_class.capacity }} vagas</p>
+                  <p>
+                    {{ school_class.shift }} | {{ class_capacity[school_class.id].confirmed }}/{{ school_class.capacity }}
+                    confirmadas | {{ class_capacity[school_class.id].remaining }} vagas livres
+                  </p>
                 </div>
                 <span class="badge {% if not school_class.is_active %}badge-muted{% endif %}">
                   {% if school_class.is_active %}Ativa{% else %}Inativa{% endif %}

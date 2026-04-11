@@ -194,6 +194,18 @@ button:hover {
   gap: 14px;
 }
 
+.form-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.form-inline button {
+  padding: 10px 14px;
+  border-radius: 14px;
+  box-shadow: none;
+}
+
 .form label {
   display: grid;
   gap: 8px;

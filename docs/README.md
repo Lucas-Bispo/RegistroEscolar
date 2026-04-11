@@ -16,6 +16,7 @@ Este arquivo funciona como indice da documentacao do projeto e foi organizado pa
 - [Fase 4 - Formularios dinamicos](fase-04-formularios-dinamicos.md)
 - [Fase 4 - Links publicos](fase-04-links-publicos.md)
 - [Fase 4 - Inscricoes publicas](fase-04-inscricoes-publicas.md)
+- [Fase 4 - Validacao operacional e vagas](fase-04-validacao-operacional-vagas.md)
 - [Guia local de execucao](runbooks/localhost.md)
 - [Guia de deploy em Linux](runbooks/deploy-linux.md)
 - [ADR 0001 - Monolito modular](adr/0001-monolito-modular.md)
@@ -33,6 +34,7 @@ Este arquivo funciona como indice da documentacao do projeto e foi organizado pa
 - [[fase-04-formularios-dinamicos]]
 - [[fase-04-links-publicos]]
 - [[fase-04-inscricoes-publicas]]
+- [[fase-04-validacao-operacional-vagas]]
 - [[runbooks/localhost]]
 - [[runbooks/deploy-linux]]
 - [[adr/0001-monolito-modular]]
