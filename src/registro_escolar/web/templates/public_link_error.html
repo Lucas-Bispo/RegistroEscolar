@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="shell shell-login">
+      <section class="login-layout">
+        <article class="panel login-panel">
+          <p class="eyebrow">Link publico</p>
+          <h1>Este acesso nao esta disponivel.</h1>
+          <p class="lead">
+            O link informado nao pode ser usado no momento. Isso pode acontecer
+            quando ele esta inativo, expirado ou nao existe mais.
+          </p>
+        </article>
+
+        <article class="panel auth-card">
+          <div class="panel-head">
+            <p class="eyebrow">Detalhe</p>
+            <h2>{{ error }}</h2>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

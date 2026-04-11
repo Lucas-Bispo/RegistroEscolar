@@ -13,6 +13,9 @@ Este arquivo funciona como indice da documentacao do projeto e foi organizado pa
 - [Fase 4 - Painel admin e login](fase-04-painel-admin-login.md)
 - [Fase 4 - Periodos letivos](fase-04-periodos-letivos.md)
 - [Fase 4 - Turmas e vagas](fase-04-turmas-vagas.md)
+- [Fase 4 - Formularios dinamicos](fase-04-formularios-dinamicos.md)
+- [Fase 4 - Links publicos](fase-04-links-publicos.md)
+- [Fase 4 - Inscricoes publicas](fase-04-inscricoes-publicas.md)
 - [Guia local de execucao](runbooks/localhost.md)
 - [Guia de deploy em Linux](runbooks/deploy-linux.md)
 - [ADR 0001 - Monolito modular](adr/0001-monolito-modular.md)
@@ -27,6 +30,9 @@ Este arquivo funciona como indice da documentacao do projeto e foi organizado pa
 - [[fase-04-painel-admin-login]]
 - [[fase-04-periodos-letivos]]
 - [[fase-04-turmas-vagas]]
+- [[fase-04-formularios-dinamicos]]
+- [[fase-04-links-publicos]]
+- [[fase-04-inscricoes-publicas]]
 - [[runbooks/localhost]]
 - [[runbooks/deploy-linux]]
 - [[adr/0001-monolito-modular]]

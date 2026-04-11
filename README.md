@@ -25,6 +25,9 @@ O projeto esta em construcao incremental seguindo fases classicas de engenharia 
 - [Fase 4 - Painel admin e login](docs/fase-04-painel-admin-login.md)
 - [Fase 4 - Periodos letivos](docs/fase-04-periodos-letivos.md)
 - [Fase 4 - Turmas e vagas](docs/fase-04-turmas-vagas.md)
+- [Fase 4 - Formularios dinamicos](docs/fase-04-formularios-dinamicos.md)
+- [Fase 4 - Links publicos](docs/fase-04-links-publicos.md)
+- [Fase 4 - Inscricoes publicas](docs/fase-04-inscricoes-publicas.md)
 - [Guia local de execucao](docs/runbooks/localhost.md)
 - [Guia de deploy em Linux](docs/runbooks/deploy-linux.md)
 - [ADR 0001 - Monolito modular](docs/adr/0001-monolito-modular.md)
@@ -77,6 +80,9 @@ Agora o projeto possui:
 
 - pagina de login em `http://localhost:8000/`
 - painel administrativo inicial em `http://localhost:8000/admin`
+- construcao inicial de formularios dinamicos no painel admin
+- geracao inicial de links publicos em `http://localhost:8000/matricula/{token}`
+- submissao publica inicial com protocolo em `http://localhost:8000/matricula/{token}`
 - API backend em `http://localhost:8000/api/v1/...`
 - documentacao interativa em `http://localhost:8000/docs`
 

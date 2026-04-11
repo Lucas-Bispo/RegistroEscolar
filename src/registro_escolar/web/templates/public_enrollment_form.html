@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Matricula online</p>
+          <h1>{{ school.name }}</h1>
+          <p class="lead">
+            Campanha <strong>{{ academic_term.name }}</strong>. Este link publico
+            representa a versao publicada do formulario e sera a base para o fluxo
+            de inscricao sem login.
+          </p>
+          <div class="hero-links">
+            <span class="pill">Valido ate {{ public_link.expires_at.strftime("%d/%m/%Y %H:%M UTC") }}</span>
+            <span class="pill">Limite configurado: {{ public_link.max_submissions }} envios</span>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <p class="card-label">Formulario</p>
+          <strong>{{ enrollment_form.name }}</strong>
+          <span>{{ enrollment_form.fields|length }} campos configurados</span>
+        </div>
+      </section>
+
+      <section class="grid">
+        <article class="panel">
+          <div class="panel-head">
+            <p class="eyebrow">Apresentacao publica</p>
+            <h2>{{ enrollment_form.name }}</h2>
+          </div>
+
+          {% if enrollment_form.description %}
+          <p class="lead">{{ enrollment_form.description }}</p>
+          {% endif %}
+
+          {% if error %}
+          <div class="alert">{{ error }}</div>
+          {% endif %}
+
+          <form class="form" method="post" action="/matricula/{{ public_link.token }}">
+            <label>
+              <span>Turma desejada *</span>
+              <select name="class_id" required>
+                <option value="">Selecione a turma</option>
+                {% for school_class in available_classes %}
+                <option value="{{ school_class.id }}" {% if submitted_class_id == school_class.id %}selected{% endif %}>
+                  {{ school_class.name }} - {{ school_class.shift }}
+                </option>
+                {% endfor %}
+              </select>
+            </label>
+
+            {% for field in enrollment_form.fields %}
+            <label>
+              <span>{{ field.label }}{% if field.required %} *{% endif %}</span>
+              {% if field.field_type == "select" %}
+              <select name="field_{{ field.order }}" {% if field.required %}required{% endif %}>
+                <option value="">Selecione</option>
+                {% for option in field.options %}
+                <option value="{{ option }}" {% if submitted_answers.get(field.order, "") == option %}selected{% endif %}>
+                  {{ option }}
+                </option>
+                {% endfor %}
+              </select>
+              {% elif field.field_type == "upload" %}
+              <input
+                type="text"
+                name="field_{{ field.order }}"
+                placeholder="Referencia do arquivo ou observacao"
+                value="{{ submitted_answers.get(field.order, '') }}"
+                {% if field.required %}required{% endif %}
+              />
+              {% elif field.field_type == "date" %}
+              <input
+                type="date"
+                name="field_{{ field.order }}"
+                value="{{ submitted_answers.get(field.order, '') }}"
+                {% if field.required %}required{% endif %}
+              />
+              {% elif field.field_type == "email" %}
+              <input
+                type="email"
+                name="field_{{ field.order }}"
+                placeholder="{{ field.placeholder }}"
+                value="{{ submitted_answers.get(field.order, '') }}"
+                {% if field.required %}required{% endif %}
+              />
+              {% elif field.field_type == "phone" %}
+              <input
+                type="tel"
+                name="field_{{ field.order }}"
+                placeholder="{{ field.placeholder }}"
+                value="{{ submitted_answers.get(field.order, '') }}"
+                {% if field.required %}required{% endif %}
+              />
+              {% else %}
+              <input
+                type="text"
+                name="field_{{ field.order }}"
+                placeholder="{{ field.placeholder }}"
+                value="{{ submitted_answers.get(field.order, '') }}"
+                {% if field.required %}required{% endif %}
+              />
+              {% endif %}
+            </label>
+            {% endfor %}
+
+            <button type="submit">Enviar inscricao</button>
+          </form>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <p class="eyebrow">Estado atual</p>
+            <h2>Recorte entregue</h2>
+          </div>
+          <div class="school-list">
+            <div class="school-card">
+              <div>
+                <h3>Link resolvido por token</h3>
+                <p>Validacao de ativo e expiracao no backend.</p>
+              </div>
+              <span class="badge">Pronto</span>
+            </div>
+            <div class="school-card">
+              <div>
+                <h3>Formulario publicado</h3>
+                <p>Renderizacao inicial dos campos configurados.</p>
+              </div>
+              <span class="badge">Pronto</span>
+            </div>
+            <div class="school-card">
+              <div>
+                <h3>Submissao da matricula</h3>
+                <p>Agora registra protocolo e respostas. Vagas entram no proximo passo.</p>
+              </div>
+              <span class="badge">Novo</span>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

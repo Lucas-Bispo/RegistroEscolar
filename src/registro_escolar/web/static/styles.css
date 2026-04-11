@@ -132,6 +132,15 @@ button {
     background 160ms ease;
 }
 
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 999px;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+}
+
 .hero-links a {
   text-decoration: none;
   color: var(--text);
@@ -203,7 +212,8 @@ button:hover {
   margin: 0;
 }
 
-.form input {
+.form input,
+.form textarea {
   width: 100%;
   border: 1px solid var(--line);
   border-radius: 16px;
@@ -223,7 +233,9 @@ button:hover {
   font: inherit;
 }
 
-.form input:focus {
+.form input:focus,
+.form select:focus,
+.form textarea:focus {
   outline: 2px solid rgba(191, 91, 44, 0.22);
   border-color: rgba(191, 91, 44, 0.35);
 }
@@ -264,9 +276,19 @@ button {
   border: 1px solid var(--line);
 }
 
+.school-card-stack {
+  align-items: flex-start;
+}
+
 .school-card p {
   margin-bottom: 0;
   color: var(--muted);
+}
+
+.inline-link {
+  color: var(--accent-dark);
+  font-weight: 700;
+  text-decoration: none;
 }
 
 .badge {

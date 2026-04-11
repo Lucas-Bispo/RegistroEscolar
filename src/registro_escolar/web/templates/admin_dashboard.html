@@ -22,6 +22,9 @@
             <a href="/api/v1/schools">JSON de escolas</a>
             <a href="/api/v1/academic-terms">JSON de periodos</a>
             <a href="/api/v1/classes">JSON de turmas</a>
+            <a href="/api/v1/forms">JSON de formularios</a>
+            <a href="/api/v1/public-links">JSON de links publicos</a>
+            <a href="/api/v1/enrollments">JSON de inscricoes</a>
             <a href="/api/v1/health">Healthcheck</a>
           </div>
         </div>
@@ -150,6 +153,60 @@
         </article>
       </section>
 
+      <section class="grid grid-secondary">
+        <article class="panel">
+          <div class="panel-head">
+            <p class="eyebrow">Inscricoes recebidas</p>
+            <h2>Fluxo publico em andamento</h2>
+          </div>
+
+          <div class="school-list">
+            {% if enrollments %}
+              {% for enrollment in enrollments %}
+              <div class="school-card school-card-stack">
+                <div>
+                  <h3>{{ enrollment.protocol }}</h3>
+                  <p>Status {{ enrollment.status }} | {{ enrollment.answers|length }} respostas registradas</p>
+                </div>
+                <span class="badge">{{ enrollment.created_at.strftime("%d/%m/%Y %H:%M UTC") }}</span>
+              </div>
+              {% endfor %}
+            {% else %}
+            <div class="school-card school-card-stack">
+              <div>
+                <h3>Nenhuma inscricao ainda</h3>
+                <p>Assim que um responsavel enviar o formulario publico, o protocolo aparecera aqui.</p>
+              </div>
+              <span class="badge badge-muted">Aguardando</span>
+            </div>
+            {% endif %}
+          </div>
+        </article>
+
+        <article class="panel roadmap-panel">
+          <div class="panel-head">
+            <p class="eyebrow">Proximo recorte</p>
+            <h2>Controle operacional</h2>
+          </div>
+          <div class="school-list">
+            <div class="school-card">
+              <div>
+                <h3>Selecao final e vagas</h3>
+                <p>Confirmacao de matricula com consistencia de ocupacao por turma.</p>
+              </div>
+              <span class="badge badge-muted">Depois</span>
+            </div>
+            <div class="school-card">
+              <div>
+                <h3>Upload real de documentos</h3>
+                <p>Trocar referencia textual por anexos com validacao de arquivo.</p>
+              </div>
+              <span class="badge badge-muted">Depois</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
       <section class="panel roadmap-panel">
         <div class="grid grid-secondary">
           <article class="panel panel-nested">
@@ -242,12 +299,181 @@
           </div>
           <div class="roadmap-card">
             <strong>3. Formulario dinamico</strong>
-            <p>Montar os campos que o responsavel vai preencher.</p>
+            <p>Montar os campos que o responsavel vai preencher. Ja iniciado.</p>
           </div>
           <div class="roadmap-card">
             <strong>4. Link publico</strong>
-            <p>Publicar a versao ativa da campanha para matricula.</p>
+            <p>Publicar a versao ativa da campanha para matricula. Ja iniciado.</p>
           </div>
+        </div>
+      </section>
+
+      <section class="panel roadmap-panel">
+        <div class="grid grid-secondary">
+          <article class="panel panel-nested">
+            <div class="panel-head">
+              <p class="eyebrow">Formulario dinamico</p>
+              <h2>Adicionar formulario</h2>
+            </div>
+
+            <form class="form" method="post" action="/admin/forms">
+              <label>
+                <span>Escola</span>
+                <select name="school_id" required>
+                  <option value="">Selecione uma escola</option>
+                  {% for school in schools %}
+                  <option value="{{ school.id }}">{{ school.name }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+
+              <label>
+                <span>Periodo letivo</span>
+                <select name="academic_term_id" required>
+                  <option value="">Selecione um periodo</option>
+                  {% for academic_term in academic_terms %}
+                  <option value="{{ academic_term.id }}">{{ academic_term.name }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+
+              <label>
+                <span>Nome do formulario</span>
+                <input type="text" name="name" placeholder="Ex.: Matricula Infantil 2028" required />
+              </label>
+
+              <label>
+                <span>Descricao</span>
+                <textarea name="description" rows="3" placeholder="Resumo do objetivo deste formulario"></textarea>
+              </label>
+
+              <label>
+                <span>Campos em JSON</span>
+                <textarea
+                  name="fields_json"
+                  rows="9"
+                  required
+                  placeholder='[{"label":"Nome do aluno","field_type":"text","required":true,"order":1},{"label":"Data de nascimento","field_type":"date","required":true,"order":2},{"label":"Turno desejado","field_type":"select","required":true,"options":["Manha","Tarde"],"order":3}]'
+                ></textarea>
+              </label>
+
+              <label class="checkbox-field">
+                <input type="checkbox" name="is_published" value="true" />
+                <span>Publicar formulario ao criar</span>
+              </label>
+
+              <button type="submit">Cadastrar formulario</button>
+            </form>
+          </article>
+
+          <article class="panel panel-nested">
+            <div class="panel-head">
+              <p class="eyebrow">Estrutura</p>
+              <h2>Formularios cadastrados</h2>
+            </div>
+
+            <div class="school-list">
+              {% for form in forms %}
+              <div class="school-card">
+                <div>
+                  <h3>{{ form.name }}</h3>
+                  <p>{{ form.fields|length }} campos • v{{ form.version }}</p>
+                </div>
+                <span class="badge {% if not form.is_published %}badge-muted{% endif %}">
+                  {% if form.is_published %}Publicado{% else %}Rascunho{% endif %}
+                </span>
+              </div>
+              {% else %}
+              <p>Nenhum formulario cadastrado no momento.</p>
+              {% endfor %}
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel roadmap-panel">
+        <div class="grid grid-secondary">
+          <article class="panel panel-nested">
+            <div class="panel-head">
+              <p class="eyebrow">Link publico</p>
+              <h2>Gerar link de matricula</h2>
+            </div>
+
+            <form class="form" method="post" action="/admin/public-links">
+              <label>
+                <span>Escola</span>
+                <select name="school_id" required>
+                  <option value="">Selecione uma escola</option>
+                  {% for school in schools %}
+                  <option value="{{ school.id }}">{{ school.name }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+
+              <label>
+                <span>Periodo letivo</span>
+                <select name="academic_term_id" required>
+                  <option value="">Selecione um periodo</option>
+                  {% for academic_term in academic_terms %}
+                  <option value="{{ academic_term.id }}">{{ academic_term.name }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+
+              <label>
+                <span>Formulario publicado</span>
+                <select name="form_id" required>
+                  <option value="">Selecione um formulario</option>
+                  {% for form in forms %}
+                  {% if form.is_published %}
+                  <option value="{{ form.id }}">{{ form.name }}</option>
+                  {% endif %}
+                  {% endfor %}
+                </select>
+              </label>
+
+              <label>
+                <span>Expira em</span>
+                <input type="datetime-local" name="expires_at" required />
+              </label>
+
+              <label>
+                <span>Limite de envios</span>
+                <input type="number" name="max_submissions" min="1" max="10000" value="500" required />
+              </label>
+
+              <label class="checkbox-field">
+                <input type="checkbox" name="is_active" value="true" checked />
+                <span>Link ativo ao criar</span>
+              </label>
+
+              <button type="submit">Gerar link publico</button>
+            </form>
+          </article>
+
+          <article class="panel panel-nested">
+            <div class="panel-head">
+              <p class="eyebrow">Distribuicao</p>
+              <h2>Links publicos cadastrados</h2>
+            </div>
+
+            <div class="school-list">
+              {% for public_link in public_links %}
+              <div class="school-card school-card-stack">
+                <div>
+                  <h3>/matricula/{{ public_link.token }}</h3>
+                  <p>Expira em {{ public_link.expires_at.strftime("%d/%m/%Y %H:%M UTC") }}</p>
+                  <a class="inline-link" href="/matricula/{{ public_link.token }}">Abrir pagina publica</a>
+                </div>
+                <span class="badge {% if not public_link.is_active %}badge-muted{% endif %}">
+                  {% if public_link.is_active %}Ativo{% else %}Inativo{% endif %}
+                </span>
+              </div>
+              {% else %}
+              <p>Nenhum link publico cadastrado no momento.</p>
+              {% endfor %}
+            </div>
+          </article>
         </div>
       </section>
     </main>
